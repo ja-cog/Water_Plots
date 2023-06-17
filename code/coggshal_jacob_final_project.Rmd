@@ -1,0 +1,1549 @@
+---
+title: "coggshall_jacob_final_project"
+author: "Jacob Coggshall"
+date: "2022-11-23"
+output: html_document
+---
+
+#### Step #1: Set global options and load packages
+```{r setup, include = FALSE, message = FALSE, warning = FALSE, error = TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(janitor)
+library(readxl)
+library(ggthemes)
+library(RColorBrewer)
+```
+#### Step #2: Import water use data; clean data
+
+**Q1:What data are you using**
+
+I am using data on deep percolation, pumping, and agricultral area.
+
+**Q2: Where are the data from**
+
+I got this data from the California Department of Water Resources
+
+**Q3:Using these data, what figures will you make**
+
+I will make three plots, one for three major regions being: the Sacramento River Basin, the San Joaquin River basin added with the Sacramento-San Joaquin river delta and the East Side Streams, and The Tulare Basin. Each of the plots will have time scale starting from 1925 and going to 2010 of every five years net deep percolation, and net pumping. I want to have a line plot above these bars that shows the amount of land in each of the regions dedicated to agriculture over this time period as well. The amount of acres will be shown on a second y axis.
+
+**Q4:What is the main point of each of your figures**
+
+I want the main point of these figures to show that deep percolation has gone down as pumping has gone up, while the amount of land for agriculture has increased. I want ot highlight how unsustainable this is.
+
+**Q5: Why did you choose the data you chose? Why did you choose the topic you chose?**
+
+I chose this data because I thought that the story it would tell would be really interesting, and that it would be relevant living in California and learning about how the central valley is affected by drought and overdrawing of our water resources.
+
+
+**Q6: In what ways are you hoping this project challenges you?**
+
+I chose this data because I thought it would really challenge me.I like how there is just so much data to use, that I had to comb through a government report to find out what the data on the excel sheet meant, and that I have to combine these 21 seperate sheets into specifc regions twice, once for the percolation and pumping, and once for the land area. I struggled with the second access and second line in lab 7 as well, so I wanted to do it again so I could get better at it.
+```{r include = TRUE, warning = FALSE, message = FALSE, error = TRUE}
+#Regions 1-7 make up the Sacramento River Basin. Reading excel file sheet by sheet for the different regions
+
+water_reg_1 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 1) |>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+water_reg_2 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 2)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+water_reg_3 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 3)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+water_reg_4 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 4)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+water_reg_5 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 5)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+water_reg_6 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 6)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+water_reg_7 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 7)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+#Regions 8-13 make up the San Joaquin River Basin. Reading excel file sheet by sheet for the different regions
+
+water_reg_8 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 8)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+water_reg_9 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 9)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+water_reg_10 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 10)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+water_reg_11 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 11)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+water_reg_12 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 12)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+water_reg_13 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 13)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+#Regions 1-7 make up the Tulare Basin. Reading excel file sheet by sheet for the different regions.
+
+water_reg_14 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 14)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+water_reg_15 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 15)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+water_reg_16 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 16)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+water_reg_17 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 17)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+water_reg_18 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 18)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+water_reg_19 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 19)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+water_reg_20 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 20)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+water_reg_21 <- read_excel(here("data/1921_2009_Groundwater_budget.xlsx"), skip = 3, sheet = 21)|>
+  clean_names()|>                                                       #Selecting deep percolation and pumping data and cleaning the names
+  select(time, deep_percolation, pumping)
+
+
+#Regions 1-7 make up the Sacramento River Basins agricultural land. Reading excel file sheet by sheet for the different regions
+
+ag_reg_1 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 1) |>
+  clean_names() |>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+ag_reg_2 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 2) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+ag_reg_3 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 3) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+ag_reg_4 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 4) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+ag_reg_5 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 5) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+ag_reg_6 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 6) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+ag_reg_7 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 7) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+#Regions 8-13 make up the San Joaquin River Basins agricultural land. Reading excel file sheet by sheet for the different regions
+
+ag_reg_8 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 8) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+ag_reg_9 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 9) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+ag_reg_10 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 10) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+ag_reg_11 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 11) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+ag_reg_12 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 12) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+ag_reg_13 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 13) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+#Regions 14-21 make up the Tulare Basins agricultural land. Reading excel file sheet by sheet for the different regions
+
+ag_reg_14 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 14) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+ag_reg_15 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 15) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+ag_reg_16 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 16) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+ag_reg_17 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 17) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+ag_reg_18 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 18) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+ag_reg_19 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 19) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+ag_reg_20 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"),skip = 3, sheet = 20) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+ag_reg_21 <- read_excel(here("data/1921_2009_Land_water_use_budget.xlsx"), skip = 3, sheet = 21) |>
+  clean_names()|>                                                       #Selecting agricultural area data and cleaning the names
+  select(time, ag_area_ac)
+
+```
+
+
+####  Step #3: Organize data for our Sacramento River Basin plot  ####
+```{r include = TRUE, warning = FALSE, error = FALSE, echo = TRUE}
+#Getting the Sacramento River Basin Data ready for Plotting                   
+
+sac_riv_basin <- rbind(water_reg_1,                    #Consolidating the regions into one object for the Sacramento River Basin
+                      water_reg_2,
+                      water_reg_3,
+                      water_reg_4,
+                      water_reg_5,
+                      water_reg_6,
+                      water_reg_7)|>
+  group_by(time) |>                                    #Grouping by time so we can consolidate our observations
+  summarize_at(vars(1:2), sum, na.rm = TRUE) |>        #Consolidating our observations
+  ungroup()                                            #Ungrouping to return our time column
+
+sac_riv_1920_1930_perc <- sac_riv_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x192"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:99,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+sac_riv_1920_1930_pump <- sac_riv_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x192"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:99,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1920)                                  #Adding in a new column for year
+
+sac_riv_1920_1930 <- cbind(sac_riv_1920_1930_perc,       #Combining our year, percolation, pumping data for the year
+                       sac_riv_1920_1930_pump)
+                       
+  #Selecting and combing the data only from 1930-1940 year span for plotting
+
+sac_riv_1930_1940_perc <- sac_riv_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x193"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+sac_riv_1930_1940_pump <- sac_riv_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x193"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1930)                                  #Adding in a new column for year
+
+sac_riv_1930_1940 <- cbind(sac_riv_1930_1940_perc,       #Combining our year, percolation, pumping data for the year
+                       sac_riv_1930_1940_pump)
+                       
+#Selecting and combing the data only from 1940-1950 year span for plotting
+
+sac_riv_1940_1950_perc <- sac_riv_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x194"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+sac_riv_1940_1950_pump <- sac_riv_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x194"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1940)                                  #Adding in a new column for year
+
+sac_riv_1940_1950 <- cbind(sac_riv_1940_1950_perc,       #Combining our year, percolation, pumping data for the year
+                       sac_riv_1940_1950_pump)
+
+#Selecting and combing the data only from 1950-1960 year span for plotting
+
+sac_riv_1950_1960_perc <- sac_riv_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x195"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+sac_riv_1950_1960_pump <- sac_riv_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x195"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1950)                                  #Adding in a new column for year
+
+sac_riv_1950_1960 <- cbind(sac_riv_1950_1960_perc,       #Combining our year, percolation, pumping data for the year
+                       sac_riv_1950_1960_pump)
+                       
+
+#Selecting and combing the data only from 1960-1970 year span for plotting
+
+sac_riv_1960_1970_perc <- sac_riv_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x196"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+sac_riv_1960_1970_pump <- sac_riv_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x196"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1960)                                  #Adding in a new column for year
+
+sac_riv_1960_1970 <- cbind(sac_riv_1960_1970_perc,       #Combining our year, percolation, pumping data for the year
+                       sac_riv_1960_1970_pump)
+                       
+#Selecting and combing the data only from 1970-1980 year span for plotting
+
+sac_riv_1970_1980_perc <- sac_riv_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x197"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+sac_riv_1970_1980_pump <- sac_riv_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x197"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1970)                                  #Adding in a new column for year
+
+sac_riv_1970_1980 <- cbind(sac_riv_1970_1980_perc,       #Combining our year, percolation, pumping data for the year
+                       sac_riv_1970_1980_pump)
+                       
+#Selecting and combing the data only from 1980-1990 year span for plotting
+
+sac_riv_1980_1990_perc <- sac_riv_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x198"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+sac_riv_1980_1990_pump <- sac_riv_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x198"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1980)                                  #Adding in a new column for year
+
+sac_riv_1980_1990 <- cbind(sac_riv_1980_1990_perc,       #Combining our year, percolation, pumping data for the year
+                       sac_riv_1980_1990_pump)
+                       
+#Selecting and combing the data only from 1990-2000 year span for plotting
+
+sac_riv_1990_2000_perc <- sac_riv_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x199"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+sac_riv_1990_2000_pump <- sac_riv_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x199"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1990)                                  #Adding in a new column for year
+
+sac_riv_1990_2000 <- cbind(sac_riv_1990_2000_perc,       #Combining our year, percolation, pumping data for the year
+                       sac_riv_1990_2000_pump)
+
+
+ #Selecting and combing the data only from 2000-2010 year span for plotting
+
+sac_riv_2000_2010_perc <- sac_riv_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x200"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:117,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+sac_riv_2000_2010_pump <- sac_riv_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x200"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:117,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 2000)                                  #Adding in a new column for year
+
+sac_riv_2000_2010 <- cbind(sac_riv_2000_2010_perc,       #Combining our year, percolation, pumping data for the year
+                       sac_riv_2000_2010_pump)
+                       
+sac_riv_water <- rbind(sac_riv_1920_1930,                #Combining all these 10 year periods into one object
+                   sac_riv_1930_1940,
+                   sac_riv_1940_1950,
+                   sac_riv_1950_1960,
+                   sac_riv_1960_1970,
+                   sac_riv_1970_1980,
+                   sac_riv_1980_1990,
+                   sac_riv_1990_2000,
+                   sac_riv_2000_2010)|>
+                pivot_longer(cols = 1:2,              #Pivoting our data so we can use the fill sector function to put our bars in
+                names_to = "type",                    #Sending our names to type
+                values_to = "withdrawals")            #Sending our value to withdrawals
+  
+  sac_riv_water$withdrawals <- 0.32585*(sac_riv_water$withdrawals)  #Converting our units from Acre Feet to Mgal
+
+
+#Consolidating the regions ag data into one object for the sac_riv Basin
+
+sac_riv_basin_ag <- rbind(ag_reg_1,                   #Combining our data on agriculture area for these regions
+                      ag_reg_2,
+                      ag_reg_3,
+                      ag_reg_4,
+                      ag_reg_5,
+                      ag_reg_6,
+                      ag_reg_7)|>
+  group_by(time) |>                                   #Grouping our objects by time so we can consolidate the number of observations
+  summarize_at(vars(1), sum, na.rm = TRUE) |>         #Combining the acres of the multiple regions into the greater basin
+  ungroup()|>                                         #Ungrouping our data
+ pivot_wider(names_from = time,                       #Pivoting our data so we can select our specific date four our trendline
+             values_from = ag_area_ac)|>              #Selecting our values from agriculture area, and names from time
+  select(contains("09-30"))|>                         #Selecting the observation from 9/30 each year for agricultural area
+           select(contains("1929"),                   #Selecting the observation from this day for each of the 10 year periods
+                           contains("1939"),
+                           contains("1949"),
+                           contains("1959"),
+                           contains("1969"),
+                           contains("1979"),
+                           contains("1989"),
+                           contains("1999"),
+                           contains("2009"))|>
+  clean_names()|>                                     #Cleaing the names of our data
+  select("1920" = x1929_09_30,                        #Changing the names of our columns
+         "1930" = x1939_09_30,
+         "1940" = x1949_09_30,
+         "1950" = x1959_09_30,
+         "1960" = x1969_09_30,
+         "1970" = x1979_09_30,
+         "1980" = x1989_09_30,
+         "1990" = x1999_09_30,
+         "2000" = x2009_09_30)|>
+  pivot_longer(cols = 1:9,                             #Pivoting our data so we can use it for our trendline
+               names_to = "time",
+               values_to = "ag_area_ac")|>
+  mutate_at(1, as.numeric, na.rm = TRUE)
+
+
+```
+
+####  Step #4: Sacramento River Basin plot ####
+```{r warning = FALSE, message = FALSE, error = TRUE, echo = TRUE, fig.width = 10, fig.height = 4}
+ggplot() +                                                          #Calling ggplot
+  theme_solarized() +                                                    #Setting the theme for the plot for visibility of data
+  geom_col(data = sac_riv_water,                                    #Calling columns as the plot, and calling the correct df 
+           aes(x = year, y = withdrawals,                           #Setting our x and y axis
+               fill = type),                                        #Filling in with our pumping and percolation data
+           position = position_dodge(4),                            #Setting the distance between our bars
+           width = 4)+                                              #Setting the width of our bars
+  scale_fill_manual(values = c(deep_percolation = "#26AEE3",        #Setting the colors of our percolation bar                         
+                               pumping = "#D95C09"),                #Setting the colors of our pumping bar
+                    labels = c("Deep Percolation",                  #Labeling our legend titles                                  
+                            "Pumping")) +                           #Labeling our other legend title
+  geom_line(data = sac_riv_basin_ag,                                #Calling the function for our trendline
+            aes(x = time,                                           #Setting the x data for our trendline
+                y = ag_area_ac*4.75),                               #Setting and scaling the y data for our trendline
+            color = "#46A669")+                                     #Setting the color of our trendline
+  geom_point(data = sac_riv_basin_ag,                               #Calling the specific points that will appear on our line
+             aes(x = time,                                          #Setting the x data for our points
+               y = ag_area_ac*4.75),                                #Setting and scaling the y data for our points
+             color = "#46A669",                                     #Setting the color of our points
+             size = 2) +                                            #Setting the size of our points
+  scale_x_continuous(breaks = c(1920,                               #Setting the ticks for the data on our x axis
+                                1930,
+                                1940,
+                                1950,
+                                1960,
+                                1970,
+                                1980,
+                                1990,
+                                2000),
+                     labels = c("1920-1930",                        #Labeling the ticks for the data on our x axis
+                                "1930-1940",
+                                "1940-1950",
+                                "1950-1960",
+                                "1960-1970",
+                                "1970-1980",
+                                "1980-1990",
+                                "1990-2000",
+                                "2000-2010")) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10),       #Setting the breaks for our y axis
+                     labels = scales::comma,                       #Setting what is gonna make those breaks
+                     limits = c(0, 10000000),                      #Setting the limit for our y axis
+                    expand = c(0, 0),                              #making our bars flush with the x axis
+                    sec.axis = sec_axis( trans=~./4.75,            #Creating a second y axis, and scaling it with our trendline
+                                          breaks = scales::pretty_breaks(n = 10),     #Setting the breaks for our y axis
+                                          name="Total Amount of Land Dedicated to Agriculture (Acres)",  #labeling our second axis
+                                          labels = scales::comma)) +    #Setting what is gonna make those breaks
+  theme(axis.line.y.right = element_line(color="#46A669")) +       #Setting the color of the additional axis
+  labs(x = "Year",                                                 #Setting the x axis label of our Plot
+      y = "Total Freshwater Pumped, and Freshwater Recharged via Deep Percolation (Mgal)", #Setting the y axis label of our Plot
+      labels = scales::comma,  #Scaling the labels with the commas
+      caption = "Figure 1: Sacramento River Basin Pumping, Deep Percolation and Agricultural Area 1920-2010. Data from California Department of Water Resources. By Jacob Coggshall",      #Setting the caption of the plot
+      fill = "") +
+  theme(axis.text = element_text(color = "black",                 #Setting the size, color, and font of our axis titles and legend
+                                  size = 8),
+        axis.title.x = element_text(color = "black",
+                                       size = 8),
+       axis.title.y.left = element_text(color = "black",
+                                   size = 6),
+       axis.title.y.right = element_text(color = "#46A669",
+                                         size = 8,
+                                         face = "bold"),
+       axis.text.y.right = element_text(color = "#46A669",
+                                        size = 8),
+       plot.caption = element_text(hjust = 0.15,
+                                   color = "black",
+                                   face = "bold",
+                                   size = 8),
+       legend.title = element_text(size = 6),
+       legend.position = "top")                                    #Setting the position of our legend
+```
+  
+  
+  
+####  Step #5: Organize data for our San Joaquin River Basin plot  ####
+```{r include = TRUE, warning = FALSE, error = FALSE, echo = TRUE}
+#Getting the San Joaquin River Basin Data ready for Plotting                   
+
+san_j_basin <- rbind(water_reg_8,                    #Consolidating the regions into one object for the San Joaquin River Basin
+                      water_reg_9,
+                      water_reg_10,
+                      water_reg_11,
+                      water_reg_12,
+                      water_reg_13)|>
+  group_by(time) |>                                    #Grouping by time so we can consolidate our observations
+  summarize_at(vars(1:2), sum, na.rm = TRUE) |>        #Consolidating our observations
+  ungroup()                                            #Ungrouping to return our time column
+
+san_j_1920_1930_perc <- san_j_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x192"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:99,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+san_j_1920_1930_pump <- san_j_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x192"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:99,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1920)                                  #Adding in a new column for year
+
+san_j_1920_1930 <- cbind(san_j_1920_1930_perc,       #Combining our year, percolation, pumping data for the year
+                       san_j_1920_1930_pump)
+                       
+  #Selecting and combing the data only from 1930-1940 year span for plotting
+
+san_j_1930_1940_perc <- san_j_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x193"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+san_j_1930_1940_pump <- san_j_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x193"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1930)                                  #Adding in a new column for year
+
+san_j_1930_1940 <- cbind(san_j_1930_1940_perc,       #Combining our year, percolation, pumping data for the year
+                       san_j_1930_1940_pump)
+                       
+#Selecting and combing the data only from 1940-1950 year span for plotting
+
+san_j_1940_1950_perc <- san_j_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x194"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+san_j_1940_1950_pump <- san_j_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x194"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1940)                                  #Adding in a new column for year
+
+san_j_1940_1950 <- cbind(san_j_1940_1950_perc,       #Combining our year, percolation, pumping data for the year
+                       san_j_1940_1950_pump)
+
+#Selecting and combing the data only from 1950-1960 year span for plotting
+
+san_j_1950_1960_perc <- san_j_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x195"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+san_j_1950_1960_pump <- san_j_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x195"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1950)                                  #Adding in a new column for year
+
+san_j_1950_1960 <- cbind(san_j_1950_1960_perc,       #Combining our year, percolation, pumping data for the year
+                       san_j_1950_1960_pump)
+                       
+
+#Selecting and combing the data only from 1960-1970 year span for plotting
+
+san_j_1960_1970_perc <- san_j_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x196"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+san_j_1960_1970_pump <- san_j_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x196"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1960)                                  #Adding in a new column for year
+
+san_j_1960_1970 <- cbind(san_j_1960_1970_perc,       #Combining our year, percolation, pumping data for the year
+                       san_j_1960_1970_pump)
+                       
+#Selecting and combing the data only from 1970-1980 year span for plotting
+
+san_j_1970_1980_perc <- san_j_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x197"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+san_j_1970_1980_pump <- san_j_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x197"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1970)                                  #Adding in a new column for year
+
+san_j_1970_1980 <- cbind(san_j_1970_1980_perc,       #Combining our year, percolation, pumping data for the year
+                       san_j_1970_1980_pump)
+                       
+#Selecting and combing the data only from 1980-1990 year span for plotting
+
+san_j_1980_1990_perc <- san_j_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x198"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+san_j_1980_1990_pump <- san_j_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x198"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1980)                                  #Adding in a new column for year
+
+san_j_1980_1990 <- cbind(san_j_1980_1990_perc,       #Combining our year, percolation, pumping data for the year
+                       san_j_1980_1990_pump)
+                       
+#Selecting and combing the data only from 1990-2000 year span for plotting
+
+san_j_1990_2000_perc <- san_j_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x199"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+san_j_1990_2000_pump <- san_j_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x199"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1990)                                  #Adding in a new column for year
+
+san_j_1990_2000 <- cbind(san_j_1990_2000_perc,       #Combining our year, percolation, pumping data for the year
+                       san_j_1990_2000_pump)
+
+
+ #Selecting and combing the data only from 2000-2010 year span for plotting
+
+san_j_2000_2010_perc <- san_j_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x200"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:117,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+san_j_2000_2010_pump <- san_j_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x200"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:117,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 2000)                                  #Adding in a new column for year
+
+san_j_2000_2010 <- cbind(san_j_2000_2010_perc,       #Combining our year, percolation, pumping data for the year
+                       san_j_2000_2010_pump)
+                       
+san_j_water <- rbind(san_j_1920_1930,                #Combining all these 10 year periods into one object
+                   san_j_1930_1940,
+                   san_j_1940_1950,
+                   san_j_1950_1960,
+                   san_j_1960_1970,
+                   san_j_1970_1980,
+                   san_j_1980_1990,
+                   san_j_1990_2000,
+                   san_j_2000_2010)|>
+                pivot_longer(cols = 1:2,              #Pivoting our data so we can use the fill sector function to put our bars in
+                names_to = "type",                    #Sending our names to type
+                values_to = "withdrawals")            #Sending our value to withdrawals
+  
+  san_j_water$withdrawals <- 0.32585*(san_j_water$withdrawals)  #Converting our units from Acre Feet to Mgal
+
+
+#Consolidating the regions ag data into one object for the san_j Basin
+
+san_j_basin_ag <- rbind(ag_reg_8,                   #Combining our data on agriculture area for these regions
+                      ag_reg_9,
+                      ag_reg_10,
+                      ag_reg_11,
+                      ag_reg_12,
+                      ag_reg_13)|>
+  group_by(time) |>                                   #Grouping our objects by time so we can consolidate the number of observations
+  summarize_at(vars(1), sum, na.rm = TRUE) |>         #Combining the acres of the multiple regions into the greater basin
+  ungroup()|>                                         #Ungrouping our data
+ pivot_wider(names_from = time,                       #Pivoting our data so we can select our specific date four our trendline
+             values_from = ag_area_ac)|>              #Selecting our values from agriculture area, and names from time
+  select(contains("09-30"))|>                         #Selecting the observation from 9/30 each year for agricultural area
+           select(contains("1929"),                   #Selecting the observation from this day for each of the 10 year periods
+                           contains("1939"),
+                           contains("1949"),
+                           contains("1959"),
+                           contains("1969"),
+                           contains("1979"),
+                           contains("1989"),
+                           contains("1999"),
+                           contains("2009"))|>
+  clean_names()|>                                     #Cleaing the names of our data
+  select("1920" = x1929_09_30,                        #Changing the names of our columns
+         "1930" = x1939_09_30,
+         "1940" = x1949_09_30,
+         "1950" = x1959_09_30,
+         "1960" = x1969_09_30,
+         "1970" = x1979_09_30,
+         "1980" = x1989_09_30,
+         "1990" = x1999_09_30,
+         "2000" = x2009_09_30)|>
+  pivot_longer(cols = 1:9,                             #Pivoting our data so we can use it for our trendline
+               names_to = "time",
+               values_to = "ag_area_ac")|>
+  mutate_at(1, as.numeric, na.rm = TRUE)
+
+
+```
+
+####  Step #6: San Joaquin River Basin plot  ####
+```{r warning = FALSE, message = FALSE, error = TRUE, echo = TRUE, fig.width = 10, fig.height = 4}
+ggplot() +                                                          #Calling ggplot
+  theme_solarized() +                                                    #Setting the theme for the plot for visibility of data
+  geom_col(data = san_j_water,                                    #Calling columns as the plot, and calling the correct df 
+           aes(x = year, y = withdrawals,                           #Setting our x and y axis
+               fill = type),                                        #Filling in with our pumping and percolation data
+           position = position_dodge(4),                            #Setting the distance between our bars
+           width = 4)+                                              #Setting the width of our bars
+  scale_fill_manual(values = c(deep_percolation = "#26AEE3",        #Setting the colors of our percolation bar                         
+                               pumping = "#D95C09"),                #Setting the colors of our pumping bar
+                    labels = c("Deep Percolation",                  #Labeling our legend titles                                  
+                            "Pumping")) +                           #Labeling our other legend title
+  geom_line(data = san_j_basin_ag,                                #Calling the function for our trendline
+            aes(x = time,                                           #Setting the x data for our trendline
+                y = ag_area_ac*4.75),                               #Setting and scaling the y data for our trendline
+            color = "#46A669")+                                     #Setting the color of our trendline
+  geom_point(data = san_j_basin_ag,                               #Calling the specific points that will appear on our line
+             aes(x = time,                                          #Setting the x data for our points
+               y = ag_area_ac*4.75),                                #Setting and scaling the y data for our points
+             color = "#46A669",                                     #Setting the color of our points
+             size = 2) +                                            #Setting the size of our points
+  scale_x_continuous(breaks = c(1920,                               #Setting the ticks for the data on our x axis
+                                1930,
+                                1940,
+                                1950,
+                                1960,
+                                1970,
+                                1980,
+                                1990,
+                                2000),
+                     labels = c("1920-1930",                        #Labeling the ticks for the data on our x axis
+                                "1930-1940",
+                                "1940-1950",
+                                "1950-1960",
+                                "1960-1970",
+                                "1970-1980",
+                                "1980-1990",
+                                "1990-2000",
+                                "2000-2010")) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10),       #Setting the breaks for our y axis
+                     labels = scales::comma,                       #Setting what is gonna make those breaks
+                     limits = c(0, 12000000),                      #Setting the limit for our y axis
+                    expand = c(0, 0),                              #making our bars flush with the x axis
+                    sec.axis = sec_axis( trans=~./4.75,            #Creating a second y axis, and scaling it with our trendline
+                                          breaks = scales::pretty_breaks(n = 10),     #Setting the breaks for our y axis
+                                          name="Total Amount of Land Dedicated to Agriculture (Acres)",  #labeling our second axis
+                                          labels = scales::comma)) +    #Setting what is gonna make those breaks
+  theme(axis.line.y.right = element_line(color="#46A669")) +       #Setting the color of the additional axis
+  labs(x = "Year",                                                 #Setting the x axis label of our Plot
+      y = "Total Freshwater Pumped, and Freshwater Recharged via Deep Percolation (Mgal)", #Setting the y axis label of our Plot
+      labels = scales::comma,  #Scaling the labels with the commas
+      caption = "Figure 1: San Joaquin River Basin Pumping, Deep Percolation and Agricultural Area 1920-2010. Data via California Department of Water Resources. By Jacob Coggshall",      #Setting the caption of the plot
+      fill = "") +
+  theme(axis.text = element_text(color = "black",                 #Setting the size, color, and font of our axis titles and legend
+                                  size = 8),
+        axis.title.x = element_text(color = "black",
+                                       size = 8),
+       axis.title.y.left = element_text(color = "black",
+                                   size = 6),
+       axis.title.y.right = element_text(color = "#46A669",
+                                         size = 8,
+                                         face = "bold"),
+       axis.text.y.right = element_text(color = "#46A669",
+                                        size = 8),
+       plot.caption = element_text(hjust = 0.15,
+                                   color = "black",
+                                   face = "bold",
+                                   size = 8),
+       legend.title = element_text(size = 6),
+       legend.position = "top")                                    #Setting the position of our legend
+```
+
+
+####  Step #7: Organize data for our Tulare Basin plot ####
+```{r include = TRUE, warning = FALSE, error = FALSE, echo = TRUE}
+#Getting the Tulare Basin Data ready for Plotting                   
+
+tulare_basin <- rbind(water_reg_14,                    #Consolidating the regions into one object for the Tulare Basin
+                      water_reg_15,
+                      water_reg_16,
+                      water_reg_17,
+                      water_reg_18,
+                      water_reg_19,
+                      water_reg_20,
+                      water_reg_21)|>
+  group_by(time) |>                                    #Grouping by time so we can consolidate our observations
+  summarize_at(vars(1:2), sum, na.rm = TRUE) |>        #Consolidating our observations
+  ungroup()                                            #Ungrouping to return our time column
+
+tulare_1920_1930_perc <- tulare_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x192"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:99,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+tulare_1920_1930_pump <- tulare_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x192"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:99,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1920)                                  #Adding in a new column for year
+
+tulare_1920_1930 <- cbind(tulare_1920_1930_perc,       #Combining our year, percolation, pumping data for the year
+                       tulare_1920_1930_pump)
+                       
+  #Selecting and combing the data only from 1930-1940 year span for plotting
+
+tulare_1930_1940_perc <- tulare_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x193"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+tulare_1930_1940_pump <- tulare_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x193"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1930)                                  #Adding in a new column for year
+
+tulare_1930_1940 <- cbind(tulare_1930_1940_perc,       #Combining our year, percolation, pumping data for the year
+                       tulare_1930_1940_pump)
+                       
+#Selecting and combing the data only from 1940-1950 year span for plotting
+
+tulare_1940_1950_perc <- tulare_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x194"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+tulare_1940_1950_pump <- tulare_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x194"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1940)                                  #Adding in a new column for year
+
+tulare_1940_1950 <- cbind(tulare_1940_1950_perc,       #Combining our year, percolation, pumping data for the year
+                       tulare_1940_1950_pump)
+
+#Selecting and combing the data only from 1950-1960 year span for plotting
+
+tulare_1950_1960_perc <- tulare_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x195"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+tulare_1950_1960_pump <- tulare_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x195"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1950)                                  #Adding in a new column for year
+
+tulare_1950_1960 <- cbind(tulare_1950_1960_perc,       #Combining our year, percolation, pumping data for the year
+                       tulare_1950_1960_pump)
+                       
+
+#Selecting and combing the data only from 1960-1970 year span for plotting
+
+tulare_1960_1970_perc <- tulare_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x196"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+tulare_1960_1970_pump <- tulare_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x196"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1960)                                  #Adding in a new column for year
+
+tulare_1960_1970 <- cbind(tulare_1960_1970_perc,       #Combining our year, percolation, pumping data for the year
+                       tulare_1960_1970_pump)
+                       
+#Selecting and combing the data only from 1970-1980 year span for plotting
+
+tulare_1970_1980_perc <- tulare_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x197"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+tulare_1970_1980_pump <- tulare_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x197"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+ distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1970)                                  #Adding in a new column for year
+
+tulare_1970_1980 <- cbind(tulare_1970_1980_perc,       #Combining our year, percolation, pumping data for the year
+                       tulare_1970_1980_pump)
+                       
+#Selecting and combing the data only from 1980-1990 year span for plotting
+
+tulare_1980_1990_perc <- tulare_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x198"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+ distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+tulare_1980_1990_pump <- tulare_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x198"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1980)                                  #Adding in a new column for year
+
+tulare_1980_1990 <- cbind(tulare_1980_1990_perc,       #Combining our year, percolation, pumping data for the year
+                       tulare_1980_1990_pump)
+                       
+#Selecting and combing the data only from 1990-2000 year span for plotting
+
+tulare_1990_2000_perc <- tulare_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x199"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+tulare_1990_2000_pump <- tulare_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x199"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:120,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 1990)                                  #Adding in a new column for year
+
+tulare_1990_2000 <- cbind(tulare_1990_2000_perc,       #Combining our year, percolation, pumping data for the year
+                       tulare_1990_2000_pump)
+
+
+ #Selecting and combing the data only from 2000-2010 year span for plotting
+
+tulare_2000_2010_perc <- tulare_basin|>                #Creating an object on percolation for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for percolation data
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = deep_percolation)|>        #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x200"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:117,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "deep_percolation")|>       #Setting where we want our names and values to go  
+  distinct(deep_percolation)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)             #Summarizing our column leaving a single value for 10 years of net percolation
+
+tulare_2000_2010_pump <- tulare_basin|>                #Creating an object on pumping for a ten year span for our timeseries plot
+    group_by(time)|>                                   #Grouping by year specifically for pumping data
+  summarize_at(vars(2), sum, na.rm = TRUE)|>           #Summarizing our data so we can pivot our object to select our 10 year period
+  pivot_wider(names_from = "time",                     #Pivoting or data so we can select just the years we want
+              values_from = pumping)|>                 #Setting where we want our names and values from
+  clean_names()|>                                      #Cleaning the name of our columns
+  select(contains("x200"))|>                           #Selecting the columns with the first three digits of the year for our 10 years
+  pivot_longer(cols = 1:117,                            #Selecting which columns to pivot
+               names_to = "time",                      #Pivoting our columns os we can summarize the data
+               values_to = "pumping")|>                #Setting where we want our names and values to go 
+  distinct(pumping)|>                                      #Getting rid of our time column
+  summarize_at(vars(1), sum, na.rm = TRUE)|>           #Summarizing our column leaving a single value for 10 years of net percolation
+  mutate(year = 2000)                                  #Adding in a new column for year
+
+tulare_2000_2010 <- cbind(tulare_2000_2010_perc,       #Combining our year, percolation, pumping data for the year
+                       tulare_2000_2010_pump)
+                       
+tulare_water <- rbind(tulare_1920_1930,                #Combining all these 10 year periods into one object
+                   tulare_1930_1940,
+                   tulare_1940_1950,
+                   tulare_1950_1960,
+                   tulare_1960_1970,
+                   tulare_1970_1980,
+                   tulare_1980_1990,
+                   tulare_1990_2000,
+                   tulare_2000_2010)|>
+                pivot_longer(cols = 1:2,              #Pivoting our data so we can use the fill sector function to put our bars in
+                names_to = "type",                    #Sending our names to type
+                values_to = "withdrawals")           #Sending our value to withdrawals
+
+    
+  tulare_water$withdrawals <- 0.32585*(tulare_water$withdrawals)  #Converting our units from Acre Feet to Mgal
+
+
+#Consolidating the regions ag data into one object for the Tulare Basin
+
+tulare_basin_ag <- rbind(ag_reg_14,                   #Combining our data on agriculture area for these regions
+                      ag_reg_15,
+                      ag_reg_16,
+                      ag_reg_17,
+                      ag_reg_18,
+                      ag_reg_19,
+                      ag_reg_20,
+                      ag_reg_21)|>
+  group_by(time) |>                                   #Grouping our objects by time so we can consolidate the number of observations
+  summarize_at(vars(1), sum, na.rm = TRUE) |>         #Combining the acres of the multiple regions into the greater basin
+  ungroup()|>                                         #Ungrouping our data
+ pivot_wider(names_from = time,                       #Pivoting our data so we can select our specific date four our trendline
+             values_from = ag_area_ac)|>              #Selecting our values from agriculture area, and names from time
+  select(contains("09-30"))|>                         #Selecting the observation from 9/30 each year for agricultural area
+           select(contains("1929"),                   #Selecting the observation from this day for each of the 10 year periods
+                           contains("1939"),
+                           contains("1949"),
+                           contains("1959"),
+                           contains("1969"),
+                           contains("1979"),
+                           contains("1989"),
+                           contains("1999"),
+                           contains("2009"))|>
+  clean_names()|>                                     #Cleaning the names of our data
+  select("1920" = x1929_09_30,                        #Changing the names of our columns
+         "1930" = x1939_09_30,
+         "1940" = x1949_09_30,
+         "1950" = x1959_09_30,
+         "1960" = x1969_09_30,
+         "1970" = x1979_09_30,
+         "1980" = x1989_09_30,
+         "1990" = x1999_09_30,
+         "2000" = x2009_09_30)|>
+  pivot_longer(cols = 1:9,                             #Pivoting our data so we can use it for our trendline
+               names_to = "time",
+               values_to = "ag_area_ac")|>
+  mutate_at(1, as.numeric, na.rm = TRUE)
+
+
+```
+
+
+####  Step #8: Tulare Basin plot  ####
+```{r warning = FALSE, message = FALSE, error = TRUE, echo = TRUE, fig.width = 10, fig.height = 4}
+ggplot() +                                                          #Calling ggplot
+  theme_solarized() +                                                    #Setting the theme for the plot for visibility of data
+  geom_col(data = tulare_water,                                    #Calling columns as the plot, and calling the correct df 
+           aes(x = year, y = withdrawals,                           #Setting our x and y axis
+               fill = type),                                        #Filling in with our pumping and percolation data
+           position = position_dodge(3.5),                            #Setting the distance between our bars
+           width = 4)+                                              #Setting the width of our bars
+  scale_fill_manual(values = c(deep_percolation = "#26AEE3",        #Setting the colors of our percolation bar                         
+                               pumping = "#D95C09"),                #Setting the colors of our pumping bar
+                    labels = c("Deep Percolation",                  #Labeling our legend titles                                  
+                            "Pumping")) +                           #Labeling our other legend title
+  geom_line(data = tulare_basin_ag,                                #Calling the function for our trendline
+            aes(x = time,                                           #Setting the x data for our trendline
+                y = ag_area_ac*10),                               #Setting and scaling the y data for our trendline
+            color = "#46A669")+                                     #Setting the color of our trendline
+  geom_point(data = tulare_basin_ag,                               #Calling the specific points that will appear on our line
+             aes(x = time,                                          #Setting the x data for our points
+               y = ag_area_ac*10),                                #Setting and scaling the y data for our points
+             color = "#46A669",                                     #Setting the color of our points
+             size = 2) +                                            #Setting the size of our points
+  scale_x_continuous(breaks = c(1920,                               #Setting the ticks for the data on our x axis
+                                1930,
+                                1940,
+                                1950,
+                                1960,
+                                1970,
+                                1980,
+                                1990,
+                                2000),
+                     labels = c("1920-1930",                        #Labeling the ticks for the data on our x axis
+                                "1930-1940",
+                                "1940-1950",
+                                "1950-1960",
+                                "1960-1970",
+                                "1970-1980",
+                                "1980-1990",
+                                "1990-2000",
+                                "2000-2010")) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10),       #Setting the breaks for our y axis
+                     labels = scales::comma,                       #Setting what is gonna make those breaks
+                     limits = c(0, 35000000),                      #Setting the limit for our y axis
+                    expand = c(0, 0),                              #making our bars flush with the x axis
+                    sec.axis = sec_axis( trans=~./10,            #Creating a second y axis, and scaling it with our trendline
+                                          breaks = scales::pretty_breaks(n = 10),     #Setting the breaks for our y axis
+                                          name="Total Amount of Land Dedicated to Agriculture (Acres)",  #labeling our second axis
+                                          labels = scales::comma)) +    #Setting what is gonna make those breaks
+  theme(axis.line.y.right = element_line(color="#46A669")) +       #Setting the color of the additional axis
+  labs(x = "Year",                                                 #Setting the x axis label of our Plot
+      y = "Total Freshwater Pumped, and Freshwater Recharged via Deep Percolation (Mgal)", #Setting the y axis label of our Plot
+      labels = scales::comma,  #Scaling the labels with the commas
+      caption = "Figure 1: Tulare Basin Pumping, Deep Percolation and Agricultural Area 1920-2010. Data via California Department of Water Resources. By Jacob Coggshall",      #Setting the caption of the plot
+      fill = "") +
+ # display.brewer.all(colorblindFriendly = TRUE) +                                   #Add in the color brewer function
+  #scale_colour_brewer(palette = "GuPN")                          #Set the pallet
+  #Color brewer is bad
+  theme(axis.text = element_text(color = "black",                 #Setting the size, color, and font of our axis titles and legend
+                                  size = 8),
+        axis.title.x = element_text(color = "black",
+                                       size = 8),
+       axis.title.y.left = element_text(color = "black",
+                                   size = 6),
+       axis.title.y.right = element_text(color = "#46A669",
+                                         size = 8,
+                                         face = "bold"),
+       axis.text.y.right = element_text(color = "#46A669",
+                                        size = 8),
+       plot.caption = element_text(hjust = 0.15,
+                                   color = "black",
+                                   face = "bold",
+                                   size = 8),
+       legend.title = element_text(size = 8),
+       legend.position = "top") 
+
+```
+
+**Q1: What is the take home message of this figure?**
+In all 3 Basins pumping and land dedicated to agriculture has increased significantly over time, while deep percolation has stagnated meaning this pumping isn’t sustainable.
+
+ **Q2: What is most (or least) surprising?**
+That the deep percolation hasn’t significantly decreased over time due to this increase in pumping and land distribution. I thought it would decrease.
+
+ **Q3: What three new functions did you implement to support visualization of the data? Explain what each of them does.**
+I used theme_solarized which I imported from the ggthemes package. This supports visualization by really contrasting well with the green line set for agricultural land.
+I used the distinct() function to select just the exact column I want to evaluate for the plots. I used color brewer, imported the package, then realized it was awful so I commented it out and used a hex color. 
+
